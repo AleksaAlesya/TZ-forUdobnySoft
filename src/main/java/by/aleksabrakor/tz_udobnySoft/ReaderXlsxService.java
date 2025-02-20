@@ -9,43 +9,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
+
 
 @Service
 public class ReaderXlsxService {
 
-    public Integer findNthMaxNumber(String pathFile, int n) {
+    public List<Integer> readNumbers(String pathFile, int n) {
         File file = validateFileExists(pathFile);
 
         List<Integer> numbers = readNumbersFromXlsx(file);
         if (numbers.size() < n) {
             throw new IllegalArgumentException("В файле недостаточно чисел");
         }
-        return findNthMaxWithMinHeap(numbers, n);
+        return numbers;
     }
 
-
-    private Integer findNthMaxWithMinHeap(List<Integer> numbers, int n) {
-        PriorityQueue<Integer> minHeap = new PriorityQueue<>(n + 1);
-
-        for (Integer number : numbers) {
-            minHeap.offer(number);
-            if (minHeap.size() > n) {
-                minHeap.poll(); // Удаляем наименьший элемент, если размер кучи больше N
-            }
-        }
-        return minHeap.peek();
-    }
-
-    public int findNthMaxNumberQuickSelect(String pathFile, int n) {
-        File file = validateFileExists(pathFile);
-
-        List<Integer> numbers = readNumbersFromXlsx(file);
-        if (numbers.size() < n) {
-            throw new IllegalArgumentException("В файле недостаточно чисел");
-        }
-        return QuickSelect.findNthLargest(numbers, n);
-    }
 
     private File validateFileExists(String pathFile) {
         File file = new File(pathFile);

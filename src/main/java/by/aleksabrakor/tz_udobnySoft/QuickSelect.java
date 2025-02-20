@@ -1,15 +1,18 @@
 package by.aleksabrakor.tz_udobnySoft;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 import java.util.Random;
 
+@Component
 public class QuickSelect {
 
-    public static int findNthLargest(List<Integer> nums, int n) {
+    public  int findNthMaxWithQuickSelect(List<Integer> nums, int n) {
         return quickSelect(nums, 0, nums.size() - 1, nums.size() - n);
     }
 
-    private static int quickSelect(List<Integer> nums, int left, int right, int k) {
+    private int quickSelect(List<Integer> nums, int left, int right, int k) {
         if (left == right) {
             return nums.get(left);
         }
@@ -27,7 +30,7 @@ public class QuickSelect {
         }
     }
 
-    private static int partition(List<Integer> nums, int left, int right, int pivotIndex) {
+    private  int partition(List<Integer> nums, int left, int right, int pivotIndex) {
         int pivotValue = nums.get(pivotIndex);
         swap(nums, pivotIndex, right);
         int storeIndex = left;
@@ -41,7 +44,7 @@ public class QuickSelect {
         return storeIndex;
     }
 
-    private static void swap(List<Integer> nums, int i, int j) {
+    private  void swap(List<Integer> nums, int i, int j) {
         int temp = nums.get(i);
         nums.set(i, nums.get(j));
         nums.set(j, temp);
