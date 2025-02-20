@@ -14,37 +14,16 @@ import java.util.PriorityQueue;
 @Service
 public class ReaderXlsxService {
 
-    public Integer findNthMaxNumber(String pathFile, int n) throws IOException {
-        File file = new File(pathFile);
-        if (!file.exists()) {
-            throw new IllegalArgumentException("Файл не найден: " + pathFile);
+    public Integer findNthMaxNumber(String pathFile, int n) {
+        File file = validateFileExists(pathFile);
+
+        List<Integer> numbers = readNumbersFromXlsx(file);
+        if (numbers.size() < n) {
+            throw new IllegalArgumentException("В файле недостаточно чисел");
         }
-
-        try (FileInputStream fis = new FileInputStream(file);
-             Workbook workbook = new XSSFWorkbook(fis)) {
-
-            Sheet sheet = workbook.getSheetAt(0);
-            List<Integer> numbers = extractNumbersFromSheet(sheet);
-
-            if (numbers.size() < n) {
-                throw new IllegalArgumentException("В файле недостаточно чисел");
-            }
-            // Используем Min-Heap для нахождения N-го максимального числа
-            return findNthMaxWithMinHeap(numbers, n);
-        }
+        return findNthMaxWithMinHeap(numbers, n);
     }
 
-    private List<Integer> extractNumbersFromSheet(Sheet sheet) {
-        List<Integer> numbers = new ArrayList<>();
-        // Читаем числа из ячеек и добавляем в лист
-        for (Row row : sheet) {
-            Cell cell = row.getCell(0);
-            if (cell != null && cell.getCellType() == CellType.NUMERIC) {
-                numbers.add((int) cell.getNumericCellValue());
-            }
-        }
-        return numbers;
-    }
 
     private Integer findNthMaxWithMinHeap(List<Integer> numbers, int n) {
         PriorityQueue<Integer> minHeap = new PriorityQueue<>(n + 1);
@@ -56,6 +35,41 @@ public class ReaderXlsxService {
             }
         }
         return minHeap.peek();
+    }
+
+    public int findNthMaxNumberQuickSelect(String pathFile, int n) {
+        File file = validateFileExists(pathFile);
+
+        List<Integer> numbers = readNumbersFromXlsx(file);
+        if (numbers.size() < n) {
+            throw new IllegalArgumentException("В файле недостаточно чисел");
+        }
+        return QuickSelect.findNthLargest(numbers, n);
+    }
+
+    private File validateFileExists(String pathFile) {
+        File file = new File(pathFile);
+        if (!file.exists()) {
+            throw new IllegalArgumentException("Файл не найден: " + pathFile);
+        }
+        return file;
+    }
+
+    private List<Integer> readNumbersFromXlsx(File file) {
+        List<Integer> numbers = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(file);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            for (Row row : sheet) {
+                Cell cell = row.getCell(0);
+                if (cell != null && cell.getCellType() == CellType.NUMERIC) {
+                    numbers.add((int) cell.getNumericCellValue());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return numbers;
     }
 }
 
