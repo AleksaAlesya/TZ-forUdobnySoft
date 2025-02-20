@@ -27,5 +27,6 @@ n - ввести целое число
 
 
 протестировать можно в постман или в браузере
-http://localhost:8080/number-max?pathFile=C:/Users/Я/Desktop/file.xlsx&n=2
+http://localhost:8080/find-nth-max?pathFile=C:/Users/Я/Desktop/file.xlsx&n=2
+http://localhost:8080/find-nth-max-quick?pathFile=C:/Users/Я/Desktop/file.xlsx&n=2
 вместо C:/Users/Я/Desktop/file.xlsx вставить путь к локальному файлу в формате xlsx
